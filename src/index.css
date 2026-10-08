@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #edf1ee;
+  --card: #ffffff;
+  --ink: #17302f;
+  --muted: #6b7f7d;
+  --line: #d9e1dd;
+  --income: #1f7a6d;
+  --expense: #c46f14;
+  --over: #c0392b;
+  --accent: #17302f;
+  --on-accent: #ffffff;
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #0f1c1b;
+  --card: #172928;
+  --ink: #e6efec;
+  --muted: #8fa5a2;
+  --line: #27403e;
+  --income: #3fb5a3;
+  --expense: #f0a04b;
+  --over: #e5675a;
+  --accent: #e6efec;
+  --on-accent: #0f1c1b;
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  font-variant-numeric: tabular-nums;
+}
+
+input,
+select,
+button {
+  font-family: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--muted);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
