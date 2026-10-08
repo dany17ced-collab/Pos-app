@@ -136,3 +136,21 @@ export function AmountInput({ value, onChange, autoFocus }) {
 }
 
 export const toAmount = (s) => Math.round(Number(s) * 100) / 100;
+
+export function Segmented({ options, value, onChange }) {
+  return (
+    <div className="flex rounded-full bg-card p-1">
+      {options.map(([k, label]) => (
+        <button
+          key={k}
+          onClick={() => onChange(k)}
+          className={`flex-1 rounded-full py-2 text-sm font-medium ${
+            value === k ? "bg-accent text-on-accent" : "text-muted"
+          }`}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+  );
+}

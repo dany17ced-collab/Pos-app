@@ -1,6 +1,7 @@
 import { useEffect, useReducer } from "react";
-import { daysInMonth, pad, uid } from "./format";
+import { uid } from "./format";
 import { ACCOUNTS } from "./constants";
+import { applyRecurring, normRec } from "./recurring";
 
 const KEY = "finanzas:v2";
 
@@ -10,6 +11,7 @@ const EMPTY = {
   budgets: {},
   goals: [],
   recurring: [],
+  noSpendDays: [],
   settings: { theme: "auto" },
 };
 
@@ -37,7 +39,14 @@ export function normalize(d = {}) {
     })),
     budgets: d.budgets && typeof d.budgets === "object" ? d.budgets : {},
     goals: Array.isArray(d.goals) ? d.goals : [],
-    recurring: Array.isArray(d.recurring) ? d.recurring : [],
+    recurring: (Array.isArray(d.recurring) ? d.recurring : []).map(normRec).filter(Boolean),
+    noSpendDays: [
+      ...new Set(
+        (Array.isArray(d.noSpendDays) ? d.noSpendDays : []).filter(
+          (x) => typeof x === "string" && /^\d{4}-\d{2}-\d{2}$/.test(x)
+        )
+      ),
+    ],
     settings: { ...EMPTY.settings, ...(d.settings || {}) },
   };
 }
@@ -49,43 +58,6 @@ function load() {
   } catch {
     return normalize();
   }
-}
-
-// Genera los movimientos recurrentes que ya tocan (incluye meses que no abriste la app)
-function applyRecurring(state, now = new Date()) {
-  const curIdx = now.getFullYear() * 12 + now.getMonth();
-  const created = [];
-  let changed = false;
-
-  const recurring = state.recurring.map((r) => {
-    let idx = r.lastIdx != null ? r.lastIdx + 1 : r.startIdx;
-    let last = r.lastIdx;
-    while (idx <= curIdx) {
-      const y = Math.floor(idx / 12);
-      const m = idx % 12;
-      const day = Math.min(r.day, daysInMonth(y, m));
-      if (idx === curIdx && now.getDate() < day) break;
-      created.push({
-        id: uid(),
-        type: r.type,
-        amount: r.amount,
-        category: r.category,
-        account: r.account,
-        note: r.note || r.category,
-        date: `${y}-${pad(m + 1)}-${pad(day)}`,
-        recurringId: r.id,
-      });
-      last = idx;
-      idx++;
-    }
-    if (last !== r.lastIdx) {
-      changed = true;
-      return { ...r, lastIdx: last };
-    }
-    return r;
-  });
-
-  return changed ? { ...state, txs: [...created, ...state.txs], recurring } : state;
 }
 
 function reducer(s, a) {
@@ -113,18 +85,25 @@ function reducer(s, a) {
           g.id === a.id ? { ...g, saved: Math.max(0, g.saved + a.amount) } : g
         ),
       };
-    case "ADD_REC": {
-      const now = new Date();
-      const rec = {
-        ...a.rec,
-        id: uid(),
-        startIdx: now.getFullYear() * 12 + now.getMonth(),
-        lastIdx: null,
-      };
-      return applyRecurring({ ...s, recurring: [...s.recurring, rec] });
-    }
+    case "ADD_REC":
+      return applyRecurring({
+        ...s,
+        recurring: [...s.recurring, { ...a.rec, id: uid(), lastDate: null }],
+      });
+    case "UPDATE_REC":
+      return applyRecurring({
+        ...s,
+        recurring: s.recurring.map((r) => (r.id === a.rec.id ? { ...r, ...a.rec } : r)),
+      });
     case "DEL_REC":
       return { ...s, recurring: s.recurring.filter((r) => r.id !== a.id) };
+    case "TOGGLE_NOSPEND":
+      return {
+        ...s,
+        noSpendDays: s.noSpendDays.includes(a.date)
+          ? s.noSpendDays.filter((d) => d !== a.date)
+          : [...s.noSpendDays, a.date],
+      };
     case "SET_THEME":
       return { ...s, settings: { ...s.settings, theme: a.theme } };
     case "REPLACE_ALL":
@@ -149,7 +128,7 @@ export function useStore() {
     }
   }, [state]);
 
-  // Si dejas la app abierta varios días, al volver se actualizan los recurrentes
+  // Si dejas la app abierta varios días, al volver se actualizan los fijos
   useEffect(() => {
     const onVisible = () => {
       if (document.visibilityState === "visible") dispatch({ type: "APPLY_REC" });

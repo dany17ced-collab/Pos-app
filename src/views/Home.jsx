@@ -8,16 +8,17 @@ import { money, monthKeyOf } from "../lib/format";
 
 export default function Home({ monthTxs, allTxs, budgets, cursor }) {
   const totals = useMemo(() => {
-    let inc = 0, exp = 0;
+    let inc = 0, exp = 0, fixed = 0;
     const byCat = {};
     monthTxs.forEach((t) => {
       if (t.type === "ingreso") inc += t.amount;
       else {
         exp += t.amount;
+        if (t.recurringId) fixed += t.amount;
         byCat[t.category] = (byCat[t.category] || 0) + t.amount;
       }
     });
-    return { inc, exp, byCat };
+    return { inc, exp, fixed, byCat };
   }, [monthTxs]);
 
   const series = useMemo(() => {
@@ -79,6 +80,9 @@ export default function Home({ monthTxs, allTxs, budgets, cursor }) {
             <div className="text-xs text-muted">Gastos</div>
             <div className="font-semibold text-expense">{money(totals.exp)}</div>
           </div>
+        </div>
+        <div className="mt-3 text-xs text-muted">
+          Fijos {money(totals.fixed)} · Variables {money(totals.exp - totals.fixed)}
         </div>
         {totalBudget > 0 && (
           <div className="mt-4">

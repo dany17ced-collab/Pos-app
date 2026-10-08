@@ -96,7 +96,7 @@ export default function Transactions({ monthTxs, cursor, onEdit }) {
                       <div className="min-w-0 flex-1">
                         <div className="truncate text-sm font-medium">{t.note || t.category}</div>
                         <div className="text-xs text-muted">
-                          {t.category} · {t.account}
+                          {t.category} · {t.account}{t.recurringId ? " · Fijo" : ""}
                         </div>
                       </div>
                       <div

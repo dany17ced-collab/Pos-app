@@ -6,9 +6,10 @@ App de control financiero personal en **soles (S/)**. Funciona en el navegador, 
 
 - **Inicio:** disponible del mes, ingresos vs. gastos, gráfica por categoría, comparación de los últimos 6 meses y alertas de presupuesto.
 - **Movimientos:** registro de gastos e ingresos con categoría, cuenta (efectivo, débito, tarjeta, Yape/Plin), nota y fecha. Búsqueda y filtros. Se pueden editar y eliminar.
-- **Presupuesto:** límite mensual por categoría con barra de avance.
+- **Gastos → Variables:** registro diario hasta del gasto más pequeño, con calendario del mes que marca los días sin registrar, racha de días seguidos y botón "No gasté nada".
+- **Gastos → Fijos:** gastos que se repiten cada mes o cada semana; se registran solos y ves cuánto ya pasó y cuánto falta del mes.
+- **Gastos → Presupuesto:** límite mensual por categoría con barra de avance.
 - **Metas de ahorro:** aportes, retiros y cuánto necesitas ahorrar al mes para llegar a la fecha.
-- **Recurrentes:** alquiler, suscripciones o sueldo que se registran solos cada mes (incluso los meses en que no abriste la app).
 - **Datos:** exportar a Excel/CSV, copia de respaldo y restauración (JSON), modo claro/oscuro.
 
 ## Probarla en tu computadora

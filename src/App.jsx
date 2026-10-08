@@ -6,14 +6,14 @@ import { monthKeyOf } from "./lib/format";
 import TxSheet from "./components/TxSheet";
 import Home from "./views/Home";
 import Transactions from "./views/Transactions";
-import Budget from "./views/Budget";
+import Spending from "./views/Spending";
 import Goals from "./views/Goals";
 import More from "./views/More";
 
 const TABS = [
   ["home", "Inicio", HomeIcon],
   ["tx", "Movimientos", List],
-  ["budget", "Presupuesto", Wallet],
+  ["spend", "Gastos", Wallet],
   ["goals", "Metas", Target],
   ["more", "Más", Menu],
 ];
@@ -66,7 +66,7 @@ export default function App() {
     setSheet(null);
   };
 
-  const showMonth = tab === "home" || tab === "tx" || tab === "budget";
+  const showMonth = tab === "home" || tab === "tx" || tab === "spend";
   const showFab = tab === "home" || tab === "tx";
 
   return (
@@ -116,8 +116,14 @@ export default function App() {
             onEdit={(tx) => setSheet({ tx })}
           />
         )}
-        {tab === "budget" && (
-          <Budget monthTxs={monthTxs} budgets={state.budgets} dispatch={dispatch} />
+        {tab === "spend" && (
+          <Spending
+            state={state}
+            monthTxs={monthTxs}
+            cursor={cursor}
+            dispatch={dispatch}
+            onEdit={(tx) => setSheet({ tx })}
+          />
         )}
         {tab === "goals" && <Goals goals={state.goals} dispatch={dispatch} />}
         {tab === "more" && <More state={state} dispatch={dispatch} />}
