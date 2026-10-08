@@ -1,11 +1,13 @@
-import { useRef } from "react";
-import { Download, Upload, RotateCcw } from "lucide-react";
+import { useRef, useState } from "react";
+import { Download, Upload, RotateCcw, Tags } from "lucide-react";
 import { Segmented } from "../components/ui";
+import CategoriesSheet from "../components/CategoriesSheet";
 import { todayISO } from "../lib/format";
 import { download, toCSV } from "../lib/files";
 
 export default function More({ state, dispatch }) {
   const fileRef = useRef(null);
+  const [editingCats, setEditingCats] = useState(false);
 
   const onImport = async (e) => {
     const file = e.target.files?.[0];
@@ -65,6 +67,16 @@ export default function More({ state, dispatch }) {
       </div>
 
       <div>
+        <h2 className="mb-2 font-semibold">Categorías</h2>
+        <button
+          onClick={() => setEditingCats(true)}
+          className="flex w-full items-center gap-3 rounded-2xl bg-card px-4 py-3.5 text-left text-sm font-medium"
+        >
+          <Tags size={18} /> Editar categorías de gastos e ingresos
+        </button>
+      </div>
+
+      <div>
         <h2 className="mb-2 font-semibold">Tus datos</h2>
         <p className="mb-3 text-sm text-muted">
           Todo se guarda solo en este dispositivo. Haz una copia de respaldo de vez en cuando.
@@ -90,6 +102,9 @@ export default function More({ state, dispatch }) {
           />
         </div>
       </div>
+      {editingCats && (
+        <CategoriesSheet dispatch={dispatch} onClose={() => setEditingCats(false)} />
+      )}
     </section>
   );
 }

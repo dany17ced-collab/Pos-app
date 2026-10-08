@@ -1,8 +1,10 @@
 import { useState } from "react";
 import {
-  Sheet, PrimaryButton, GhostButton, Chips, TypeToggle, AmountInput, inputCls, toAmount,
+  Sheet, PrimaryButton, GhostButton, TypeToggle, AmountInput, inputCls, toAmount,
 } from "./ui";
-import { EXPENSE_CATS, INCOME_CATS, ACCOUNTS } from "../lib/constants";
+import CategoryChips from "./CategoryChips";
+import { useCats } from "../lib/categories";
+import { ACCOUNTS } from "../lib/constants";
 import { todayISO } from "../lib/format";
 
 // Valores de getDay(): 0 = domingo ... 6 = sábado
@@ -11,9 +13,10 @@ const WEEKDAYS = [
 ];
 
 export default function RecSheet({ initial, onSave, onDelete, onClose }) {
+  const { pick } = useCats();
   const [type, setType] = useState(initial?.type || "gasto");
   const [amount, setAmount] = useState(initial ? String(initial.amount) : "");
-  const [category, setCategory] = useState(initial?.category || "Vivienda");
+  const [category, setCategory] = useState(initial?.category || pick(initial?.type || "gasto", "Vivienda"));
   const [account, setAccount] = useState(initial?.account || ACCOUNTS[0]);
   const [note, setNote] = useState(initial?.note || "");
   const [freq, setFreq] = useState(initial?.freq || "mensual");
@@ -21,7 +24,6 @@ export default function RecSheet({ initial, onSave, onDelete, onClose }) {
   const [weekday, setWeekday] = useState(initial?.weekday ?? 1);
   const [startDate, setStartDate] = useState(initial?.startDate || todayISO());
 
-  const cats = type === "gasto" ? Object.keys(EXPENSE_CATS) : INCOME_CATS;
   const dayNum = Math.round(Number(day));
   const valid =
     toAmount(amount) > 0 && (freq === "semanal" || (dayNum >= 1 && dayNum <= 31)) && startDate;
@@ -32,7 +34,7 @@ export default function RecSheet({ initial, onSave, onDelete, onClose }) {
         value={type}
         onChange={(t) => {
           setType(t);
-          setCategory(t === "gasto" ? "Vivienda" : "Sueldo");
+          setCategory(pick(t, t === "gasto" ? "Vivienda" : "Sueldo"));
         }}
       />
       <AmountInput value={amount} onChange={setAmount} autoFocus={!initial} />
@@ -43,7 +45,7 @@ export default function RecSheet({ initial, onSave, onDelete, onClose }) {
         onChange={(e) => setNote(e.target.value)}
         className={inputCls}
       />
-      <Chips options={cats} value={category} onChange={setCategory} />
+      <CategoryChips type={type} value={category} onChange={setCategory} />
 
       <div>
         <label className="mb-1 block text-xs text-muted">¿Cada cuánto se paga?</label>

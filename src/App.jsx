@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight, Home as HomeIcon, List, Target, Menu, Plus, Wallet } from "lucide-react";
 import { useStore } from "./lib/store";
+import { CatsProvider } from "./lib/categories";
 import { MONTHS } from "./lib/constants";
 import { monthKeyOf } from "./lib/format";
 import TxSheet from "./components/TxSheet";
@@ -70,6 +71,7 @@ export default function App() {
   const showFab = tab === "home" || tab === "tx";
 
   return (
+    <CatsProvider categories={state.categories} dispatch={dispatch}>
     <div className="mx-auto min-h-screen max-w-md pb-36">
       <header className="flex items-center justify-between px-5 pb-3 pt-6">
         {showMonth ? (
@@ -174,5 +176,6 @@ export default function App() {
         />
       )}
     </div>
+    </CatsProvider>
   );
 }

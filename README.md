@@ -10,6 +10,7 @@ App de control financiero personal en **soles (S/)**. Funciona en el navegador, 
 - **Gastos → Fijos:** gastos que se repiten cada mes o cada semana; se registran solos y ves cuánto ya pasó y cuánto falta del mes.
 - **Gastos → Presupuesto:** límite mensual por categoría con barra de avance.
 - **Metas de ahorro:** aportes, retiros y cuánto necesitas ahorrar al mes para llegar a la fecha.
+- **Categorías editables:** agrega las tuyas (deporte, mascotas, etc.) al registrar un gasto con "+ Nueva", o en Más → Editar categorías para renombrar, cambiar color o eliminar.
 - **Datos:** exportar a Excel/CSV, copia de respaldo y restauración (JSON), modo claro/oscuro.
 
 ## Probarla en tu computadora

@@ -1,9 +1,10 @@
 import { useMemo } from "react";
 import { Card, Progress } from "../components/ui";
-import { EXPENSE_CATS } from "../lib/constants";
+import { useCats } from "../lib/categories";
 import { money } from "../lib/format";
 
 export default function Budget({ monthTxs, budgets, dispatch }) {
+  const { expense } = useCats();
   const spentBy = useMemo(() => {
     const m = {};
     monthTxs.forEach((t) => {
@@ -17,7 +18,7 @@ export default function Budget({ monthTxs, budgets, dispatch }) {
       <p className="text-sm text-muted">
         Define cuánto quieres gastar al mes en cada categoría. El límite se aplica a todos los meses.
       </p>
-      {Object.keys(EXPENSE_CATS).map((cat) => {
+      {expense.map(({ name: cat, color }) => {
         const spent = spentBy[cat] || 0;
         const limit = Number(budgets[cat] || 0);
         const over = limit > 0 && spent > limit;
@@ -26,7 +27,7 @@ export default function Budget({ monthTxs, budgets, dispatch }) {
             <div className="flex items-center">
               <span
                 className="mr-2 h-3 w-3 rounded-full"
-                style={{ background: EXPENSE_CATS[cat] }}
+                style={{ background: color }}
               />
               <span className="flex-1 text-sm font-medium">{cat}</span>
               <input
@@ -50,7 +51,7 @@ export default function Budget({ monthTxs, budgets, dispatch }) {
             <div className="mt-3">
               <Progress
                 value={limit ? (spent / limit) * 100 : 0}
-                color={over ? "var(--over)" : EXPENSE_CATS[cat]}
+                color={over ? "var(--over)" : color}
               />
             </div>
             <div className={`mt-2 text-xs ${over ? "text-over" : "text-muted"}`}>

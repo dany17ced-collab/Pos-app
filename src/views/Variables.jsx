@@ -1,17 +1,20 @@
 import { useMemo, useState } from "react";
 import { Flame, Plus, Check } from "lucide-react";
 import {
-  Card, Sheet, PrimaryButton, GhostButton, Chips, AmountInput, inputCls, toAmount,
+  Card, Sheet, PrimaryButton, GhostButton, AmountInput, inputCls, toAmount,
 } from "../components/ui";
-import { EXPENSE_CATS, ACCOUNTS, catColor } from "../lib/constants";
+import CategoryChips from "../components/CategoryChips";
+import { useCats } from "../lib/categories";
+import { ACCOUNTS } from "../lib/constants";
 import { addDays, dayLabel, daysInMonth, money, monthKeyOf, pad, todayISO } from "../lib/format";
 
 const isVariable = (t) => t.type === "gasto" && !t.recurringId;
 const WEEK = ["L", "M", "M", "J", "V", "S", "D"];
 
 function QuickAdd({ date, onSave, onClose }) {
+  const { pick } = useCats();
   const [amount, setAmount] = useState("");
-  const [category, setCategory] = useState("Comida");
+  const [category, setCategory] = useState(() => pick("gasto", "Comida"));
   const [account, setAccount] = useState(ACCOUNTS[0]);
   const [note, setNote] = useState("");
   const [saved, setSaved] = useState("");
@@ -39,7 +42,7 @@ function QuickAdd({ date, onSave, onClose }) {
     <Sheet title="Gasto variable" onClose={onClose}>
       <div className="-mt-3 text-sm capitalize text-muted">{dayLabel(date)}</div>
       <AmountInput value={amount} onChange={setAmount} autoFocus />
-      <Chips options={Object.keys(EXPENSE_CATS)} value={category} onChange={setCategory} />
+      <CategoryChips type="gasto" value={category} onChange={setCategory} />
       <input
         type="text"
         placeholder="¿En qué fue? (opcional)"
@@ -73,6 +76,7 @@ function QuickAdd({ date, onSave, onClose }) {
 }
 
 export default function Variables({ monthTxs, allTxs, noSpendDays, cursor, dispatch, onEdit }) {
+  const { colorOf } = useCats();
   const [adding, setAdding] = useState(null); // fecha ISO o null
   const [sel, setSel] = useState(todayISO());
   const today = todayISO();
@@ -245,7 +249,7 @@ export default function Variables({ monthTxs, allTxs, noSpendDays, cursor, dispa
                   >
                     <span
                       className="mr-3 h-2.5 w-2.5 shrink-0 rounded-full"
-                      style={{ background: catColor(t.type, t.category) }}
+                      style={{ background: colorOf(t.type, t.category) }}
                     />
                     <div className="min-w-0 flex-1">
                       <div className="truncate text-sm font-medium">{t.note || t.category}</div>

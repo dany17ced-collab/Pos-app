@@ -1,10 +1,12 @@
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { Card, Empty, inputCls } from "../components/ui";
-import { ACCOUNTS, MONTHS, catColor } from "../lib/constants";
+import { ACCOUNTS, MONTHS } from "../lib/constants";
+import { useCats } from "../lib/categories";
 import { dayLabel, money } from "../lib/format";
 
 export default function Transactions({ monthTxs, cursor, onEdit }) {
+  const { colorOf } = useCats();
   const [q, setQ] = useState("");
   const [kind, setKind] = useState("todos");
   const [account, setAccount] = useState("todas");
@@ -91,7 +93,7 @@ export default function Transactions({ monthTxs, cursor, onEdit }) {
                     >
                       <span
                         className="mr-3 h-2.5 w-2.5 shrink-0 rounded-full"
-                        style={{ background: catColor(t.type, t.category) }}
+                        style={{ background: colorOf(t.type, t.category) }}
                       />
                       <div className="min-w-0 flex-1">
                         <div className="truncate text-sm font-medium">{t.note || t.category}</div>

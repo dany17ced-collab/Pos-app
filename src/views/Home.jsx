@@ -3,10 +3,12 @@ import {
   PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, Tooltip,
 } from "recharts";
 import { Card, Progress, Empty } from "../components/ui";
-import { EXPENSE_CATS, MONTHS, CHART } from "../lib/constants";
+import { MONTHS, CHART } from "../lib/constants";
+import { useCats } from "../lib/categories";
 import { money, monthKeyOf } from "../lib/format";
 
 export default function Home({ monthTxs, allTxs, budgets, cursor }) {
+  const { colorOf } = useCats();
   const totals = useMemo(() => {
     let inc = 0, exp = 0, fixed = 0;
     const byCat = {};
@@ -136,7 +138,7 @@ export default function Home({ monthTxs, allTxs, budgets, cursor }) {
                     stroke="none"
                   >
                     {pieData.map((d) => (
-                      <Cell key={d.name} fill={EXPENSE_CATS[d.name] || "#8A9A98"} />
+                      <Cell key={d.name} fill={colorOf("gasto", d.name)} />
                     ))}
                   </Pie>
                 </PieChart>
@@ -147,7 +149,7 @@ export default function Home({ monthTxs, allTxs, budgets, cursor }) {
                 <li key={d.name} className="flex items-center text-sm">
                   <span
                     className="mr-2 h-3 w-3 rounded-full"
-                    style={{ background: EXPENSE_CATS[d.name] || "#8A9A98" }}
+                    style={{ background: colorOf("gasto", d.name) }}
                   />
                   <span className="flex-1">{d.name}</span>
                   <span className="font-medium">{money(d.value)}</span>
