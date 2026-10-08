@@ -39,6 +39,16 @@ Abre la dirección publicada en el navegador del celular:
 - **Android (Chrome):** menú ⋮ → *Instalar aplicación*.
 - **iPhone (Safari):** botón Compartir → *Agregar a pantalla de inicio*.
 
+## Descargar el APK (Android)
+
+Cada `push` a `main` compila un APK automáticamente:
+
+1. En GitHub abre la pestaña **Actions** y entra a la última ejecución de **Compilar APK de Android** (tarda unos 5 minutos).
+2. Baja hasta **Artifacts** y descarga **finanzas-apk** (viene en un .zip).
+3. Descomprime el zip en el celular y abre `app-debug.apk`. Android pedirá permitir instalar apps de origen desconocido.
+
+Dentro del APK, exportar y crear copias de respaldo abre el menú de compartir de Android para guardar el archivo donde quieras.
+
 ## Importante sobre tus datos
 
 Los datos viven en el almacenamiento del navegador de cada dispositivo. No se sincronizan entre celular y computadora, y se pierden si borras los datos del navegador. Usa **Más → Crear copia de respaldo** con regularidad.
